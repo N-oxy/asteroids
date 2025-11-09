@@ -2,8 +2,9 @@ import pygame # type: ignore
 from player import *
 from asteroid import *
 from constants import *
-from logger import log_state
+from logger import log_state, log_event
 from asteroidfield import *
+import sys
 
 def main():
     pygame.init()
@@ -27,10 +28,19 @@ def main():
             if event.type == pygame.QUIT:
                 return
         screen.fill("black")
+
         for element in drawable:
             element.draw(screen)
+
         for element in updatable:
             element.update(dt)
+
+        for asteroid in asteroid_group:
+            if asteroid.collides_with(player):
+                log_event("player_hit")
+                print("Game over!")
+                sys.exit()
+        
         pygame.display.flip()
         dt = clock.tick(60) / 1000
 
